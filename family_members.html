@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Members</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Family Members</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Relationship</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in family_members %}
+                <tr>
+                    <td>{{ member.name }}</td>
+                    <td>{{ member.relationship }}</td>
+                    <td>
+                        <form action="{{ url_for('remove_family_member', member_id=member.id) }}" method="POST">
+                            <button type="submit" class="delete-btn">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="/logout">Logout</a>
+    </div>
+</body>
+</html>

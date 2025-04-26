@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Finance Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome message -->
+        <h1>Welcome, {{ username }}!</h1>
+
+        <!-- Display family members -->
+        <h2>Your Family Members</h2>
+        <ul>
+            {% for member in family_members %}
+            <li>{{ member[1] }} (ID: {{ member[0] }})</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Form to add a new transaction -->
+        <h3>Add Transaction for Family Member</h3>
+        <form action="/add_transaction" method="POST">
+            <label for="type">Type:</label>
+            <select name="type" id="type" required>
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
+            </select>
+
+            <label for="amount">Amount:</label>
+            <input type="number" name="amount" id="amount" required>
+
+            <label for="description-select">Description:</label>
+            <select name="description-select" id="description-select" onchange="toggleDescriptionField()" required>
+                <option value="Salary">Salary</option>
+                <option value="Rent">Rent</option>
+                <option value="Groceries">Groceries</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <div id="custom-description" style="display: none;">
+                <label for="description">Custom Description:</label>
+                <input type="text" name="description" id="description">
+            </div>
+
+            <label for="member_id">Select Family Member:</label>
+            <select name="member_id" id="member_id" required>
+                {% for member in family_members %}
+                <option value="{{ member[0] }}">{{ member[1] }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Add Transaction</button>
+        </form>
+
+        <!-- Display transactions for each family member -->
+        <h3>Transaction History</h3>
+        {% for member in family_members %}
+        <h4>Transactions for {{ member[1] }}</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions[member[0]] %}
+                <tr>
+                    <td>{{ transaction[1] }}</td>
+                    <td>₹{{ transaction[2] }}</td>
+                    <td>{{ transaction[3] }}</td>
+                    <td>{{ transaction[4] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endfor %}
+        
+        <a href="/add_member">Add a Family Member</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <script>
+        function toggleDescriptionField() {
+            var selectElement = document.getElementById("description-select");
+            var customDescriptionField = document.getElementById("custom-description");
+            if (selectElement.value === "Other") {
+                customDescriptionField.style.display = "block";
+            } else {
+                customDescriptionField.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
